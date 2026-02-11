@@ -1,0 +1,50 @@
+@VehicleInventory_HostAddress = http://localhost:5014
+
+### 1. Get All Vehicles
+GET {{VehicleInventory_HostAddress}}/api/vehicles
+Accept: application/json
+
+### 2. Create a New Vehicle (Sedan)
+POST {{VehicleInventory_HostAddress}}/api/vehicles
+Content-Type: application/json
+
+{
+  "vehicleCode": "V-001",
+  "locationId": 1,
+  "vehicleType": "Sedan"
+}
+
+### 3. Create Another Vehicle (SUV)
+POST {{VehicleInventory_HostAddress}}/api/vehicles
+Content-Type: application/json
+
+{
+  "vehicleCode": "V-002",
+  "locationId": 2,
+  "vehicleType": "SUV"
+}
+
+### 4. Get Vehicle By ID
+GET {{VehicleInventory_HostAddress}}/api/vehicles/1
+Accept: application/json
+
+### 5. Update Vehicle Status to Rented
+PUT {{VehicleInventory_HostAddress}}/api/vehicles/1/status
+Content-Type: application/json
+
+"Rented"
+
+### 6. Try to duplicate Rent (Should Fail Domain Rule)
+PUT {{VehicleInventory_HostAddress}}/api/vehicles/1/status
+Content-Type: application/json
+
+"Rented"
+
+### 7. Return Vehicle (Make Available)
+PUT {{VehicleInventory_HostAddress}}/api/vehicles/1/status
+Content-Type: application/json
+
+"Available"
+
+### 8. Delete Vehicle
+DELETE {{VehicleInventory_HostAddress}}/api/vehicles/2
