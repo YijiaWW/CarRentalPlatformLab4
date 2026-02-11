@@ -23,4 +23,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/", () => "Maintenance.WebAPI is running!");
+
 app.Run();
