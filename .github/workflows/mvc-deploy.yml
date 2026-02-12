@@ -60,7 +60,7 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: "carrental-mvc-YijiaWang"
+          app-name: "carrental-mvc-yijiawang-esaf9uag9h3hbth4"
           slot-name: "Production"
           package: app.zip
           startup-command: "dotnet CarRentalPlatform.dll"
