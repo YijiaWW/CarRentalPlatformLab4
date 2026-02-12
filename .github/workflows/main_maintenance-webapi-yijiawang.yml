@@ -8,8 +8,8 @@ on:
     branches:
       - main
     paths:
-      - 'WebService/Maintenance.WebAPI/**'
-      - '.github/workflows/main_maintenance-webapi-yijiawang.yml'
+      - "WebService/Maintenance.WebAPI/**"
+      - ".github/workflows/main_maintenance-webapi-yijiawang.yml"
   workflow_dispatch:
 
 jobs:

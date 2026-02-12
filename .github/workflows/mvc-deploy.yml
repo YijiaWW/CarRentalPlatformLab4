@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'CarRentalPlatform/**'
-      - '.github/workflows/mvc-deploy.yml'
+      - "CarRentalPlatform/**"
+      - ".github/workflows/mvc-deploy.yml"
   workflow_dispatch:
 
 jobs:
