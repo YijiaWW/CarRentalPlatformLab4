@@ -1,10 +1,18 @@
 using CarRentalPlatform.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Maintenance API HTTP client
+builder.Services.AddHttpClient("MaintenanceApi", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    client.BaseAddress = new Uri(config["MaintenanceApi:BaseUrl"]!);
+});
 
 
 // Add DbContext registration with your connection string
