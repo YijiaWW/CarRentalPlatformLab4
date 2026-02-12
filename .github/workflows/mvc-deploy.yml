@@ -2,7 +2,7 @@ name: Build and deploy MVC app to Azure Web App - carrental-mvc-YijiaWang
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "9.x"
+          dotnet-version: "8.x"
 
       - name: Restore & Build
         run: dotnet build CarRentalPlatform/CarRentalPlatform.csproj -c Release
@@ -50,9 +50,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_MVC }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_560AAF7160C34B74BA940FDC5CDFA826 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_049B72F11FDA4C4692B6AD9D13C1EB45 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_89C2523F5A9248CDBA7601019070DE29 }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
@@ -60,4 +60,4 @@ jobs:
           app-name: "carrental-mvc-YijiaWang"
           slot-name: "Production"
           package: app.zip
-          startup-command: 'dotnet CarRentalPlatform.dll'
+          startup-command: "dotnet CarRentalPlatform.dll"
