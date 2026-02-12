@@ -64,6 +64,17 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_049B72F11FDA4C4692B6AD9D13C1EB45 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_89C2523F5A9248CDBA7601019070DE29 }}
 
+      - name: Ensure Web App is running
+        shell: bash
+        run: |
+          APP_NAME="maintenance-webapi-YijiaWang"
+          RG=$(az webapp list --query "[?name=='$APP_NAME'].resourceGroup | [0]" -o tsv)
+          if [ -z "$RG" ]; then
+            echo "Could not find resource group for $APP_NAME"
+            exit 1
+          fi
+          az webapp start --name "$APP_NAME" --resource-group "$RG"
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
