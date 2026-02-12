@@ -50,13 +50,6 @@ jobs:
         with:
           name: mvc-app
 
-      - name: Azure Login (OIDC)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_560AAF7160C34B74BA940FDC5CDFA826 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_049B72F11FDA4C4692B6AD9D13C1EB45 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_89C2523F5A9248CDBA7601019070DE29 }}
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
@@ -64,3 +57,4 @@ jobs:
           slot-name: "Production"
           package: app.zip
           startup-command: "dotnet CarRentalPlatform.dll"
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_MVC }}
