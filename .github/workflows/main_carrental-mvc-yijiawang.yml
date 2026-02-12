@@ -67,3 +67,4 @@ jobs:
           app-name: "carrental-mvc-YijiaWang"
           slot-name: "Production"
           package: app.zip
+          startup-command: "dotnet CarRentalPlatform.dll"
