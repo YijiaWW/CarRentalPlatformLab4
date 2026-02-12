@@ -3,6 +3,9 @@ name: Build and deploy MVC app to Azure Web App - carrental-mvc-YijiaWang
 on:
   push:
     branches: [main]
+    paths:
+      - 'CarRentalPlatform/**'
+      - '.github/workflows/mvc-deploy.yml'
   workflow_dispatch:
 
 jobs:
