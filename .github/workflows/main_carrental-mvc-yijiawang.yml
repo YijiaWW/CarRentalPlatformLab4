@@ -1,45 +1,58 @@
+# CI/CD workflow for the MVC web app.
+# CI phase: restore, build, publish, and package the MVC project.
+# CD phase: download artifact and deploy to Azure Web App.
 name: Build and deploy ASP.Net Core app to Azure Web App - carrental-mvc-YijiaWang
 
 on:
+  # Run automatically when main branch receives MVC-related changes.
   push:
     branches:
       - main
     paths:
       - "CarRentalPlatform/**"
       - ".github/workflows/main_carrental-mvc-yijiawang.yml"
+  # Allow manual trigger from GitHub Actions UI.
   workflow_dispatch:
 
 jobs:
+  # Build job creates a deployable artifact.
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     steps:
+      # Pull repository content into the runner.
       - uses: actions/checkout@v4
 
+      # Install .NET SDK required by this project.
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.x"
 
+      # Compile MVC project in Release mode.
       - name: Build with dotnet
         run: dotnet build CarRentalPlatform/CarRentalPlatform.csproj --configuration Release
 
+      # Publish runtime-ready files to a single folder.
       - name: dotnet publish
         run: dotnet publish CarRentalPlatform/CarRentalPlatform.csproj -c Release -o ./publish
 
+      # Zip publish output for reliable deployment to App Service.
       - name: Zip release
         run: |
           cd publish
           zip -r ../app.zip .
 
+      # Store build package so deploy job can download it.
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
           path: app.zip
 
+  # Deploy job runs only after successful build.
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -48,11 +61,13 @@ jobs:
       contents: read
 
     steps:
+      # Retrieve packaged artifact created by build job.
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
 
+      # Authenticate to Azure using federated GitHub secrets.
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -60,6 +75,7 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_972A6CF53E4A4D7F863B3D23B00B33C4 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DCE1F8FF96FB4A8CB834A3C519B2EA1B }}
 
+      # Deploy package to production slot and start MVC entry assembly.
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3

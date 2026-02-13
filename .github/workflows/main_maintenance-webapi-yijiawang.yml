@@ -1,62 +1,77 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
+# CI/CD workflow for the Maintenance API.
+# CI phase: restore, build, publish, and package API output.
+# CD phase: ensure app is running, then deploy package to Azure.
 
 name: Build and deploy ASP.Net Core app to Azure Web App - maintenance-webapi-YijiaWang
 
 on:
+  # Run automatically when main branch receives API-related changes.
   push:
     branches:
       - main
     paths:
       - "WebService/Maintenance.WebAPI/**"
       - ".github/workflows/main_maintenance-webapi-yijiawang.yml"
+  # Allow manual trigger from GitHub Actions UI.
   workflow_dispatch:
 
 jobs:
+  # Build job produces deployment artifact.
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read # Required for actions/checkout.
 
     steps:
+      # Pull repository content into the runner.
       - uses: actions/checkout@v4
 
+      # Install .NET SDK required by this project.
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.x"
 
+      # Compile Maintenance API in Release mode.
       - name: Build with dotnet
         run: dotnet build WebService/Maintenance.WebAPI/Maintenance.WebAPI.csproj --configuration Release
 
+      # Publish runtime-ready API files to a single folder.
       - name: dotnet publish
         run: dotnet publish WebService/Maintenance.WebAPI/Maintenance.WebAPI.csproj -c Release -o ./publish
 
+      # Zip publish output for consistent Azure deployment.
       - name: Zip release
         run: |
           cd publish
           ls -la
           zip -r ../app.zip .
 
+      # Store build package so deploy job can download it.
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
           path: app.zip
 
+  # Deploy job runs only after successful build.
   deploy:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write # Required for requesting Azure federated token.
+      contents: read # Required for actions/checkout.
 
     steps:
+      # Retrieve packaged artifact created by build job.
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
 
+      # Authenticate to Azure using federated GitHub secrets.
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -64,6 +79,8 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_049B72F11FDA4C4692B6AD9D13C1EB45 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_89C2523F5A9248CDBA7601019070DE29 }}
 
+      # Defensive step: start app and wait until Azure reports Running.
+      # This prevents intermittent deploy failures when site is stopped.
       - name: Ensure Web App is running
         shell: bash
         run: |
@@ -86,6 +103,7 @@ jobs:
           echo "Web App did not reach Running state in time."
           exit 1
 
+      # Deploy package to production slot and start API entry assembly.
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
