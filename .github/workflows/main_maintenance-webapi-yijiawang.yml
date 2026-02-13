@@ -74,6 +74,17 @@ jobs:
             exit 1
           fi
           az webapp start --name "$APP_NAME" --resource-group "$RG"
+          for i in {1..24}; do
+            STATE=$(az webapp show --name "$APP_NAME" --resource-group "$RG" --query "state" -o tsv)
+            echo "Current app state: $STATE"
+            if [ "$STATE" = "Running" ]; then
+              echo "Web App is running."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Web App did not reach Running state in time."
+          exit 1
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
