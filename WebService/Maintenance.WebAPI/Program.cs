@@ -1,3 +1,4 @@
+using Maintenance.WebAPI.Middleware;
 using Maintenance.WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 app.MapControllers();
 
 app.MapGet("/", () => "Maintenance.WebAPI is running!");

@@ -21,5 +21,13 @@ namespace Maintenance.WebAPI.Controllers
             var history = _service.GetByVehicleId(vehicleId);
             return Ok(history);
         }
+
+        [HttpGet("crash")]
+        public IActionResult Crash()
+        {
+            int x = 0;
+            int y = 5 / x;
+            return Ok();
+        }
     }
 }
