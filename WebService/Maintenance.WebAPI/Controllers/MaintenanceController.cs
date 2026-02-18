@@ -22,6 +22,44 @@ namespace Maintenance.WebAPI.Controllers
             return Ok(history);
         }
 
+        [HttpPost]
+        public IActionResult AddRepair([FromBody] RepairHistoryDto repair)
+        {
+            if (repair.VehicleId <= 0)
+            {
+                return BadRequest(new
+                {
+                    error = "InvalidParameter",
+                    message = "VehicleId must be greater than zero."
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(repair.Description))
+            {
+                return BadRequest(new
+                {
+                    error = "InvalidParameter",
+                    message = "Description must not be empty."
+                });
+            }
+
+            if (repair.Cost < 0)
+            {
+                return BadRequest(new
+                {
+                    error = "InvalidParameter",
+                    message = "Cost cannot be negative."
+                });
+            }
+
+            var created = _service.AddRepair(repair);
+            return CreatedAtAction(
+                nameof(GetRepairHistory),
+                new { vehicleId = created.VehicleId },
+                created
+            );
+        }
+
         [HttpGet("crash")]
         public IActionResult Crash()
         {
