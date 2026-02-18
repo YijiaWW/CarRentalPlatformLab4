@@ -164,6 +164,6 @@ bower_components/
 
 # Azure
 .azure/
-appsettings.json
-appsettings.Development.json
+# appsettings.json
+# appsettings.Development.json
 local.settings.json
