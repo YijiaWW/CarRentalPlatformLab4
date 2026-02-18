@@ -21,12 +21,14 @@ namespace Maintenance.WebAPI.Middleware
                 await context.Response.WriteAsync("API Key was not provided.");
                 return;
             }
-            if (_apiKey != providedKey)
+
+            if (!_apiKey.Equals(providedKey))
             {
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync("Unauthorized client.");
                 return;
             }
+
             await _next(context);
         }
     }

@@ -24,6 +24,10 @@ app.UseAuthorization();
 
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
+
+// Enable for all environments to test locally
+app.UseMiddleware<ApiKeyMiddleware>();
+
 app.MapControllers();
 
 app.MapGet("/", () => "Maintenance.WebAPI is running!");
