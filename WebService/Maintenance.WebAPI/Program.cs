@@ -12,6 +12,10 @@ builder.Services.AddSwaggerGen();
 // Register service
 builder.Services.AddScoped<IRepairHistoryService, FakeRepairHistoryService>();
 
+// Dictionary for Stateful Behavior (Lab 5 Part 3)
+var usageCounts = new Dictionary<string, int>();
+builder.Services.AddSingleton(usageCounts);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

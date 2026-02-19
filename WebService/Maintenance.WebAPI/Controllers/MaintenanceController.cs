@@ -8,12 +8,15 @@ namespace Maintenance.WebAPI.Controllers
     [Route("api/maintenance")]
     public class MaintenanceController : ControllerBase
     {
-        private static readonly Dictionary<string, int> _usageCounts = new();
+        private readonly Dictionary<string, int> _usageCounts;
         private readonly IRepairHistoryService _service;
 
-        public MaintenanceController(IRepairHistoryService service)
+        public MaintenanceController(
+            IRepairHistoryService service, 
+            Dictionary<string, int> usageCounts)
         {
             _service = service;
+            _usageCounts = usageCounts;
         }
 
         [HttpGet("vehicles/{vehicleId}/repairs")]
