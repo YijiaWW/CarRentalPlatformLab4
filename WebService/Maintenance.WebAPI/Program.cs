@@ -25,8 +25,10 @@ app.UseAuthorization();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-// Enable for all environments to test locally
-app.UseMiddleware<ApiKeyMiddleware>();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseMiddleware<ApiKeyMiddleware>();
+}
 
 app.MapControllers();
 

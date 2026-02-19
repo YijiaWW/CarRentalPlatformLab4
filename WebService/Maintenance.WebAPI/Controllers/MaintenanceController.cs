@@ -8,6 +8,7 @@ namespace Maintenance.WebAPI.Controllers
     [Route("api/maintenance")]
     public class MaintenanceController : ControllerBase
     {
+        private static readonly Dictionary<string, int> _usageCounts = new();
         private readonly IRepairHistoryService _service;
 
         public MaintenanceController(IRepairHistoryService service)
@@ -66,6 +67,28 @@ namespace Maintenance.WebAPI.Controllers
             int x = 0;
             int y = 5 / x;
             return Ok();
+        }
+
+        [HttpGet("usage")]
+        public IActionResult Usage()
+        {
+            var key = Request.Headers["X-Api-Key"].ToString();
+            if (string.IsNullOrEmpty(key))
+            {
+                key = "unknown";
+            }
+
+            if (!_usageCounts.ContainsKey(key))
+            {
+                _usageCounts[key] = 0;
+            }
+
+            _usageCounts[key]++;
+            return Ok(new
+            {
+                clientId = key,
+                callCount = _usageCounts[key]
+            });
         }
     }
 }

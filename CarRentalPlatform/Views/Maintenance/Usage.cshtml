@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "API Usage";
+}
+
+<h2>API Usage Statistics</h2>
+
+@if (Model != null)
+{
+    <div class="card mt-4">
+        <div class="card-header">
+            Current Session Usage
+        </div>
+        <div class="card-body">
+            <pre>@Model</pre>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">No usage data available.</div>
+}
+
+<a asp-action="Usage" class="btn btn-secondary mt-3">Refresh</a>

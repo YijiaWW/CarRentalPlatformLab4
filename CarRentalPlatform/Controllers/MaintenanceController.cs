@@ -46,5 +46,50 @@ namespace CarRentalPlatform.Controllers
                 return View(new List<RepairHistoryViewModel>());
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Usage()
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("MaintenanceApi");
+                // Using the correct route "api/maintenance/usage" based on our API implementation
+                var result = await client.GetFromJsonAsync<object>("api/maintenance/usage");
+                return View(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error calling usage endpoint");
+                ViewBag.ErrorMessage = "Unable to load usage statistics.";
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Transfer(int fromId, int toId, decimal amount)
+        {
+            // Note: The API endpoint for Transfer has not been implemented in the Maintenance.WebAPI yet.
+            // This code assumes an endpoint exists at "api/maintenance/transfer".
+            
+            if (amount <= 0) return View(); // Simple check or just return view if no parameters
+
+            try
+            {
+                var client = _httpClientFactory.CreateClient("MaintenanceApi");
+                var response = await client.PostAsync(
+                    $"api/maintenance/transfer?fromId={fromId}&toId={toId}&amount={amount}",
+                    null);
+                
+                var content = await response.Content.ReadAsStringAsync();
+                ViewBag.Result = content;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error calling transfer endpoint");
+                ViewBag.Result = "Error executing transfer.";
+            }
+
+            return View();
+        }
     }
 }
